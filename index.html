@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+        integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+        crossorigin="anonymous"></script>
+    <title>Roster Giocatori</title>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <!-- contenitore sx -->
+        <div class="left">
+            <div class="players" v-if="players.length>0">
+                <!-- metto classe 'active' per quello corrente -->
+                <div class="player" v-for="(player, indice) in players">
+                    <div class="player-info" @click="showPlayer(indice)">
+                        <h3>
+                            <span class="player-name">{{ player.nome }}</span>
+                        </h3>
+                    </div>
+                    <div class="match-icon f-right">
+                        <i class="fa fa-trash" aria-hidden="true" @click="deletePlayer(indice)"></i>
+                    </div>
+                </div>
+
+            </div>
+            <div class="players" v-else>
+                <div class="player-info">
+                    <h3>
+                    <span class="player-name" >Nessun giocatore disponibile</span>
+                    </h3>
+                </div>
+            </div>
+            <div class="left-footer">
+                <input class="new-player-inputs" placeholder="Aggiungi giocatore" v-model="nuovoGiocatore" @keyup.enter="addPlayer">
+                <div class="left-footer-icon f-right">
+                    <i class="fa fa-plus" aria-hidden="true" @click="addPlayer"></i>
+                </div>
+            </div>
+        </div>
+        <!-- /contenitore sx -->
+        <!-- contenitore dx -->
+        <div class="right">
+            <div class="header-right">
+                <div class="header-right-logo">
+                    <h3 v-if="giocatoreSelezionato != -1">Statistiche di <span id="header-right-player-name">{{ players[giocatoreSelezionato].nome }}</span></h3>
+                    <h3 v-else>Selezionare un giocatore per vedere le statistiche</h3>
+                </div>
+            </div>
+            <div class="right-infos-container">
+                <div class="right-infos" id="chat_container">
+                    <div class="panel-body">
+                        <div class="categories" v-if="giocatoreSelezionato != -1">
+                            <div class="category">
+                                <span>Rimbalzi</span>
+                                <span>{{ players[giocatoreSelezionato].rimbalzi }}</span>
+                            </div>
+                            <div class="category">
+                                <span>Falli</span>
+                                <span>{{ players[giocatoreSelezionato].falli }}</span>
+                            </div>
+                            <!-- red o green se > 50 -->
+                            <div 
+                                class="category"
+                                :class="(players[giocatoreSelezionato].puntiSegnati < 50) ? ' red' : 'green'"
+                            > 
+                                <span>Punti segnati</span>
+                                <span>{{ players[giocatoreSelezionato].puntiSegnati }}</span>
+                            </div>
+                        </div>
+
+                        <div class="categories" v-else>
+                            <div class="category empty">
+                                <span>Nessuna statistica disponibile</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lista-ultime-partite" v-if="giocatoreSelezionato != -1" >
+                        <div class="ultime-partite" v-if="players[giocatoreSelezionato].matches.length">
+                            <h3>Ultime partite fatte</h3>
+
+                            <div class="partita" v-for="partita in players[giocatoreSelezionato].matches">
+                                Avversario: <span class="opposing-team">{{ partita }}</span>
+                            </div>
+
+                        </div>
+                        <div class="ultime-partite" v-else>
+                            <h3>Nessuna partita giocata</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /contenitore dx -->
+    </div>
+
+    <script src="main.js"></script>
+    <!--<script src="compito-partenza.js"></script>-->
+</body>
+
+</html>
